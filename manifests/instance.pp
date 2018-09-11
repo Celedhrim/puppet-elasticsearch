@@ -387,8 +387,7 @@ define elasticsearch::instance (
     }
 
     file { "${configdir}/scripts":
-      ensure => 'directory',
-      target => "${elasticsearch::homedir}/scripts",
+      ensure  => 'directory',
       source  => "${elasticsearch::homedir}/scripts",
       mode    => '0755',
       recurse => 'remote',
