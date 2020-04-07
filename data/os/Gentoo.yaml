@@ -1,6 +1,6 @@
 ---
-elasticsearch::defaults_location: /etc/conf.d
-elasticsearch::init_template: "%{module_name}/etc/init.d/elasticsearch.openrc.erb"
-elasticsearch::package_name: app-misc/elasticsearch
-elasticsearch::pid_dir: /run/elasticsearch
-elasticsearch::service_provider: openrc
+elasticsearch_legacy::defaults_location: /etc/conf.d
+elasticsearch_legacy::init_template: "%{module_name}/etc/init.d/elasticsearch.openrc.erb"
+elasticsearch_legacy::package_name: app-misc/elasticsearch
+elasticsearch_legacy::pid_dir: /run/elasticsearch
+elasticsearch_legacy::service_provider: openrc
