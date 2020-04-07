@@ -14,7 +14,7 @@
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-define elasticsearch::script (
+define elasticsearch_legacy::script (
   String                                     $source,
   String                                     $ensure  = 'present',
   Optional[Variant[Boolean, Enum['remote']]] $recurse = undef,
@@ -26,11 +26,11 @@ define elasticsearch::script (
   $filename_array = split($source, '/')
   $basefilename = $filename_array[-1]
 
-  file { "${elasticsearch::homedir}/scripts/${basefilename}":
+  file { "${elasticsearch_legacy::homedir}/scripts/${basefilename}":
     ensure  => $ensure,
     source  => $source,
-    owner   => $elasticsearch::elasticsearch_user,
-    group   => $elasticsearch::elasticsearch_group,
+    owner   => $elasticsearch_legacy::elasticsearch_user,
+    group   => $elasticsearch_legacy::elasticsearch_group,
     recurse => $recurse,
     mode    => '0644',
   }

@@ -1,7 +1,7 @@
 # Manages shield/x-pack users.
 #
 # @example creates and manage a user with membership in the 'logstash' and 'kibana4' roles.
-#   elasticsearch::user { 'bob':
+#   elasticsearch_legacy::user { 'bob':
 #     password => 'foobar',
 #     roles    => ['logstash', 'kibana4'],
 #   }
@@ -21,29 +21,29 @@
 #
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-define elasticsearch::user (
+define elasticsearch_legacy::user (
   String                    $password,
   Enum['absent', 'present'] $ensure = 'present',
   Array                     $roles  = [],
 ) {
-  if $elasticsearch::security_plugin == undef {
-    fail("\"${elasticsearch::security_plugin}\" required")
+  if $elasticsearch_legacy::security_plugin == undef {
+    fail("\"${elasticsearch_legacy::security_plugin}\" required")
   }
 
   if $password =~ /^\$2a\$/ {
     elasticsearch_user { $name:
       ensure          => $ensure,
-      configdir       => $elasticsearch::configdir,
+      configdir       => $elasticsearch_legacy::configdir,
       hashed_password => $password,
     }
   } else {
-    $_provider = $elasticsearch::security_plugin ? {
+    $_provider = $elasticsearch_legacy::security_plugin ? {
       'shield' => 'esusers',
       'x-pack' => 'users',
     }
     elasticsearch_user { $name:
       ensure    => $ensure,
-      configdir => $elasticsearch::configdir,
+      configdir => $elasticsearch_legacy::configdir,
       password  => $password,
       provider  => $_provider,
     }

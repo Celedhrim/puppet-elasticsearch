@@ -40,19 +40,19 @@
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-define elasticsearch::service (
-  Enum['absent', 'present'] $ensure             = $elasticsearch::ensure,
+define elasticsearch_legacy::service (
+  Enum['absent', 'present'] $ensure             = $elasticsearch_legacy::ensure,
   Hash                      $init_defaults      = {},
   Optional[String]          $init_defaults_file = undef,
   Optional[String]          $init_template      = undef,
   Optional[String]          $service_flags      = undef,
-  Elasticsearch_legacy::Status     $status             = $elasticsearch::status,
+  Elasticsearch_legacy::Status     $status             = $elasticsearch_legacy::status,
 ) {
 
-  case $elasticsearch::service_provider {
+  case $elasticsearch_legacy::service_provider {
 
     'init': {
-      elasticsearch::service::init { $name:
+      elasticsearch_legacy::service::init { $name:
         ensure             => $ensure,
         status             => $status,
         init_defaults_file => $init_defaults_file,
@@ -61,7 +61,7 @@ define elasticsearch::service (
       }
     }
     'openbsd': {
-      elasticsearch::service::openbsd { $name:
+      elasticsearch_legacy::service::openbsd { $name:
         ensure        => $ensure,
         status        => $status,
         init_template => $init_template,
@@ -69,7 +69,7 @@ define elasticsearch::service (
       }
     }
     'systemd': {
-      elasticsearch::service::systemd { $name:
+      elasticsearch_legacy::service::systemd { $name:
         ensure             => $ensure,
         status             => $status,
         init_defaults_file => $init_defaults_file,
@@ -78,7 +78,7 @@ define elasticsearch::service (
       }
     }
     'openrc': {
-      elasticsearch::service::openrc { $name:
+      elasticsearch_legacy::service::openrc { $name:
         ensure             => $ensure,
         status             => $status,
         init_defaults_file => $init_defaults_file,
@@ -87,7 +87,7 @@ define elasticsearch::service (
       }
     }
     default: {
-      fail("Unknown service provider ${elasticsearch::service_provider}")
+      fail("Unknown service provider ${elasticsearch_legacy::service_provider}")
     }
   }
 }

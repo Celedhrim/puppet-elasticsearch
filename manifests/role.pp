@@ -12,7 +12,7 @@
 #   be found in the Shield/x-pack documentation.
 #
 # @example create and manage the role 'power_user' mapped to an LDAP group.
-#   elasticsearch::role { 'power_user':
+#   elasticsearch_legacy::role { 'power_user':
 #     privileges => {
 #       'cluster' => 'monitor',
 #       'indices' => {
@@ -26,14 +26,14 @@
 #
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-define elasticsearch::role (
+define elasticsearch_legacy::role (
   Enum['absent', 'present'] $ensure     = 'present',
   Array                     $mappings   = [],
   Hash                      $privileges = {},
 ) {
   validate_slength($name, 30, 1)
-  if $elasticsearch::security_plugin == undef {
-    fail("\"${elasticsearch::security_plugin}\" required")
+  if $elasticsearch_legacy::security_plugin == undef {
+    fail("\"${elasticsearch_legacy::security_plugin}\" required")
   }
 
   if empty($privileges) or $ensure == 'absent' {

@@ -59,23 +59,23 @@
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-define elasticsearch::snapshot_repository (
+define elasticsearch_legacy::snapshot_repository (
   String                          $location,
   Enum['absent', 'present']       $ensure                  = 'present',
-  Optional[String]                $api_basic_auth_password = $elasticsearch::api_basic_auth_password,
-  Optional[String]                $api_basic_auth_username = $elasticsearch::api_basic_auth_username,
-  Optional[Stdlib::Absolutepath]  $api_ca_file             = $elasticsearch::api_ca_file,
-  Optional[Stdlib::Absolutepath]  $api_ca_path             = $elasticsearch::api_ca_path,
-  String                          $api_host                = $elasticsearch::api_host,
-  Integer[0, 65535]               $api_port                = $elasticsearch::api_port,
-  Enum['http', 'https']           $api_protocol            = $elasticsearch::api_protocol,
-  Integer                         $api_timeout             = $elasticsearch::api_timeout,
+  Optional[String]                $api_basic_auth_password = $elasticsearch_legacy::api_basic_auth_password,
+  Optional[String]                $api_basic_auth_username = $elasticsearch_legacy::api_basic_auth_username,
+  Optional[Stdlib::Absolutepath]  $api_ca_file             = $elasticsearch_legacy::api_ca_file,
+  Optional[Stdlib::Absolutepath]  $api_ca_path             = $elasticsearch_legacy::api_ca_path,
+  String                          $api_host                = $elasticsearch_legacy::api_host,
+  Integer[0, 65535]               $api_port                = $elasticsearch_legacy::api_port,
+  Enum['http', 'https']           $api_protocol            = $elasticsearch_legacy::api_protocol,
+  Integer                         $api_timeout             = $elasticsearch_legacy::api_timeout,
   Boolean                         $compress                = true,
   Optional[String]                $chunk_size              = undef,
   Optional[String]                $max_restore_rate        = undef,
   Optional[String]                $max_snapshot_rate       = undef,
   Optional[String]                $repository_type         = undef,
-  Boolean                         $validate_tls            = $elasticsearch::validate_tls,
+  Boolean                         $validate_tls            = $elasticsearch_legacy::validate_tls,
 ) {
 
   es_instance_conn_validator { "${name}-snapshot":

@@ -36,12 +36,12 @@
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-define elasticsearch::service::openbsd (
-  Enum['absent', 'present'] $ensure        = $elasticsearch::ensure,
-  Optional[String]          $init_template = $elasticsearch::init_template,
-  Optional[String]          $pid_dir       = $elasticsearch::pid_dir,
+define elasticsearch_legacy::service::openbsd (
+  Enum['absent', 'present'] $ensure        = $elasticsearch_legacy::ensure,
+  Optional[String]          $init_template = $elasticsearch_legacy::init_template,
+  Optional[String]          $pid_dir       = $elasticsearch_legacy::pid_dir,
   Optional[String]          $service_flags = undef,
-  Elasticsearch_legacy::Status     $status        = $elasticsearch::status,
+  Elasticsearch_legacy::Status     $status        = $elasticsearch_legacy::status,
 ) {
 
   #### Service management
@@ -81,7 +81,7 @@ define elasticsearch::service::openbsd (
 
   }
 
-  $notify_service = $elasticsearch::restart_config_change ? {
+  $notify_service = $elasticsearch_legacy::restart_config_change ? {
     true  => Service["elasticsearch-instance-${name}"],
     false => undef,
   }
@@ -97,7 +97,7 @@ define elasticsearch::service::openbsd (
         instance     => $name,
         pid_dir      => $pid_dir,
         notify       => $notify_service,
-        package_name => $elasticsearch::package_name,
+        package_name => $elasticsearch_legacy::package_name,
       }
       -> file { "/etc/rc.d/elasticsearch_${name}":
         ensure => $ensure,

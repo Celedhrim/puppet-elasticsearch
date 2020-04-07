@@ -36,12 +36,12 @@
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-define elasticsearch::service::systemd (
-  Enum['absent', 'present'] $ensure             = $elasticsearch::ensure,
+define elasticsearch_legacy::service::systemd (
+  Enum['absent', 'present'] $ensure             = $elasticsearch_legacy::ensure,
   Hash                      $init_defaults      = {},
   Optional[String]          $init_defaults_file = undef,
   Optional[String]          $init_template      = undef,
-  Elasticsearch_legacy::Status     $status             = $elasticsearch::status,
+  Elasticsearch_legacy::Status     $status             = $elasticsearch_legacy::status,
 ) {
 
   #### Service management
@@ -79,21 +79,21 @@ define elasticsearch::service::systemd (
     $service_enable = false
   }
 
-  if(has_key($init_defaults, 'ES_USER') and $init_defaults['ES_USER'] != $elasticsearch::elasticsearch_user) {
+  if(has_key($init_defaults, 'ES_USER') and $init_defaults['ES_USER'] != $elasticsearch_legacy::elasticsearch_user) {
     fail('Found ES_USER setting for init_defaults but is not same as elasticsearch_user setting. Please use elasticsearch_user setting.')
   }
 
   $new_init_defaults = merge(
     {
-      'ES_USER'        => $elasticsearch::elasticsearch_user,
-      'ES_GROUP'       => $elasticsearch::elasticsearch_group,
+      'ES_USER'        => $elasticsearch_legacy::elasticsearch_user,
+      'ES_GROUP'       => $elasticsearch_legacy::elasticsearch_group,
       'MAX_OPEN_FILES' => '65536',
       'MAX_THREADS'    => '4096',
     },
     $init_defaults
   )
 
-  $notify_service = $elasticsearch::restart_config_change ? {
+  $notify_service = $elasticsearch_legacy::restart_config_change ? {
     true  => [ Exec["systemd_reload_${name}"], Service["elasticsearch-instance-${name}"] ],
     false => Exec["systemd_reload_${name}"]
   }
@@ -102,7 +102,7 @@ define elasticsearch::service::systemd (
 
     # Defaults file, either from file source or from hash to augeas commands
     if ($init_defaults_file != undef) {
-      file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
+      file { "${elasticsearch_legacy::defaults_location}/elasticsearch-${name}":
         ensure => $ensure,
         source => $init_defaults_file,
         owner  => 'root',
@@ -113,7 +113,7 @@ define elasticsearch::service::systemd (
       }
     } else {
       augeas { "defaults_${name}":
-        incl    => "${elasticsearch::defaults_location}/elasticsearch-${name}",
+        incl    => "${elasticsearch_legacy::defaults_location}/elasticsearch-${name}",
         lens    => 'Shellvars.lns',
         changes => template("${module_name}/etc/sysconfig/defaults.erb"),
         before  => Service["elasticsearch-instance-${name}"],
@@ -143,22 +143,22 @@ define elasticsearch::service::systemd (
         $nproc = '4096'
       }
 
-      elasticsearch_service_file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
+      elasticsearch_service_file { "${elasticsearch_legacy::systemd_service_path}/elasticsearch-${name}.service":
         ensure            => $ensure,
         content           => file($init_template),
-        defaults_location => $elasticsearch::defaults_location,
-        group             => $elasticsearch::elasticsearch_group,
-        homedir           => $elasticsearch::homedir,
+        defaults_location => $elasticsearch_legacy::defaults_location,
+        group             => $elasticsearch_legacy::elasticsearch_group,
+        homedir           => $elasticsearch_legacy::homedir,
         instance          => $name,
         memlock           => $memlock,
         nofile            => $nofile,
         nproc             => $nproc,
-        package_name      => $elasticsearch::package_name,
-        pid_dir           => $elasticsearch::pid_dir,
-        user              => $elasticsearch::elasticsearch_user,
+        package_name      => $elasticsearch_legacy::package_name,
+        pid_dir           => $elasticsearch_legacy::pid_dir,
+        user              => $elasticsearch_legacy::elasticsearch_user,
         notify            => $notify_service,
       }
-      -> file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
+      -> file { "${elasticsearch_legacy::systemd_service_path}/elasticsearch-${name}.service":
         ensure => $ensure,
         owner  => 'root',
         group  => 'root',
@@ -172,13 +172,13 @@ define elasticsearch::service::systemd (
 
   } else { # absent
 
-    file { "${elasticsearch::systemd_service_path}/elasticsearch-${name}.service":
+    file { "${elasticsearch_legacy::systemd_service_path}/elasticsearch-${name}.service":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"],
     }
 
-    file { "${elasticsearch::defaults_location}/elasticsearch-${name}":
+    file { "${elasticsearch_legacy::defaults_location}/elasticsearch-${name}":
       ensure    => 'absent',
       subscribe => Service["elasticsearch-instance-${name}"],
       notify    => Exec["systemd_reload_${name}"],

@@ -304,7 +304,7 @@
 # @author Richard Pijnenburg <richard.pijnenburg@elasticsearch.com>
 # @author Tyler Langlois <tyler.langlois@elastic.co>
 #
-class elasticsearch (
+class elasticsearch_legacy (
   Enum['absent', 'present']                       $ensure,
   Optional[String]                                $api_basic_auth_password,
   Optional[String]                                $api_basic_auth_username,
@@ -412,26 +412,26 @@ class elasticsearch (
 
   #### Manage actions
 
-  contain elasticsearch::package
-  contain elasticsearch::config
+  contain elasticsearch_legacy::package
+  contain elasticsearch_legacy::config
 
-  create_resources('elasticsearch::index', $::elasticsearch::indices)
-  create_resources('elasticsearch::instance', $::elasticsearch::instances)
-  create_resources('elasticsearch::pipeline', $::elasticsearch::pipelines)
-  create_resources('elasticsearch::plugin', $::elasticsearch::plugins)
-  create_resources('elasticsearch::role', $::elasticsearch::roles)
-  create_resources('elasticsearch::script', $::elasticsearch::scripts)
-  create_resources('elasticsearch::snapshot_repository', $::elasticsearch::snapshot_repositories)
-  create_resources('elasticsearch::template', $::elasticsearch::templates)
-  create_resources('elasticsearch::user', $::elasticsearch::users)
+  create_resources('elasticsearch_legacy::index', $::elasticsearch_legacy::indices)
+  create_resources('elasticsearch_legacy::instance', $::elasticsearch_legacy::instances)
+  create_resources('elasticsearch_legacy::pipeline', $::elasticsearch_legacy::pipelines)
+  create_resources('elasticsearch_legacy::plugin', $::elasticsearch_legacy::plugins)
+  create_resources('elasticsearch_legacy::role', $::elasticsearch_legacy::roles)
+  create_resources('elasticsearch_legacy::script', $::elasticsearch_legacy::scripts)
+  create_resources('elasticsearch_legacy::snapshot_repository', $::elasticsearch_legacy::snapshot_repositories)
+  create_resources('elasticsearch_legacy::template', $::elasticsearch_legacy::templates)
+  create_resources('elasticsearch_legacy::user', $::elasticsearch_legacy::users)
 
   if ($manage_repo == true) {
     if ($repo_stage == false) {
       # Use normal relationship ordering
-      contain elasticsearch::repo
+      contain elasticsearch_legacy::repo
 
-      Class['elasticsearch::repo']
-      -> Class['elasticsearch::package']
+      Class['elasticsearch_legacy::repo']
+      -> Class['elasticsearch_legacy::package']
 
     } else {
       # Use staging for ordering
@@ -439,7 +439,7 @@ class elasticsearch (
         stage { $repo_stage:  before => Stage['main'] }
       }
 
-      class { 'elasticsearch::repo':
+      class { 'elasticsearch_legacy::repo':
         stage => $repo_stage,
       }
     }
@@ -454,121 +454,121 @@ class elasticsearch (
   #
   # forgive me for what you're about to see
 
-  if defined(Class['java']) { Class['java'] -> Class['elasticsearch::config'] }
+  if defined(Class['java']) { Class['java'] -> Class['elasticsearch_legacy::config'] }
 
   if $ensure == 'present' {
 
     # Installation and configuration
-    Class['elasticsearch::package']
-    -> Class['elasticsearch::config']
+    Class['elasticsearch_legacy::package']
+    -> Class['elasticsearch_legacy::config']
 
     # Top-level ordering bindings for resources.
-    Class['elasticsearch::config']
-    -> Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
-    Elasticsearch::Plugin <| ensure == 'absent' |>
-    -> Class['elasticsearch::config']
-    Class['elasticsearch::config']
-    -> Elasticsearch::Instance <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::User <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::Role <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::Template <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::Pipeline <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::Index <| |>
-    Class['elasticsearch::config']
-    -> Elasticsearch::Snapshot_repository <| |>
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::Plugin <| ensure == 'present' or ensure == 'installed' |>
+    Elasticsearch_legacy::Plugin <| ensure == 'absent' |>
+    -> Class['elasticsearch_legacy::config']
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::Instance <| |>
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::User <| |>
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::Role <| |>
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::Template <| |>
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::Pipeline <| |>
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::Index <| |>
+    Class['elasticsearch_legacy::config']
+    -> Elasticsearch_legacy::Snapshot_repository <| |>
 
   } else {
 
     # Absent; remove configuration before the package.
-    Class['elasticsearch::config']
-    -> Class['elasticsearch::package']
+    Class['elasticsearch_legacy::config']
+    -> Class['elasticsearch_legacy::package']
 
     # Top-level ordering bindings for resources.
-    Elasticsearch::Plugin <| |>
-    -> Class['elasticsearch::config']
-    Elasticsearch::Instance <| |>
-    -> Class['elasticsearch::config']
-    Elasticsearch::User <| |>
-    -> Class['elasticsearch::config']
-    Elasticsearch::Role <| |>
-    -> Class['elasticsearch::config']
-    Elasticsearch::Template <| |>
-    -> Class['elasticsearch::config']
-    Elasticsearch::Pipeline <| |>
-    -> Class['elasticsearch::config']
-    Elasticsearch::Index <| |>
-    -> Class['elasticsearch::config']
-    Elasticsearch::Snapshot_repository <| |>
-    -> Class['elasticsearch::config']
+    Elasticsearch_legacy::Plugin <| |>
+    -> Class['elasticsearch_legacy::config']
+    Elasticsearch_legacy::Instance <| |>
+    -> Class['elasticsearch_legacy::config']
+    Elasticsearch_legacy::User <| |>
+    -> Class['elasticsearch_legacy::config']
+    Elasticsearch_legacy::Role <| |>
+    -> Class['elasticsearch_legacy::config']
+    Elasticsearch_legacy::Template <| |>
+    -> Class['elasticsearch_legacy::config']
+    Elasticsearch_legacy::Pipeline <| |>
+    -> Class['elasticsearch_legacy::config']
+    Elasticsearch_legacy::Index <| |>
+    -> Class['elasticsearch_legacy::config']
+    Elasticsearch_legacy::Snapshot_repository <| |>
+    -> Class['elasticsearch_legacy::config']
 
   }
 
   # Install plugins before managing instances or users/roles
-  Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
-  -> Elasticsearch::Instance <| |>
-  Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
-  -> Elasticsearch::User <| |>
-  Elasticsearch::Plugin <| ensure == 'present' or ensure == 'installed' |>
-  -> Elasticsearch::Role <| |>
+  Elasticsearch_legacy::Plugin <| ensure == 'present' or ensure == 'installed' |>
+  -> Elasticsearch_legacy::Instance <| |>
+  Elasticsearch_legacy::Plugin <| ensure == 'present' or ensure == 'installed' |>
+  -> Elasticsearch_legacy::User <| |>
+  Elasticsearch_legacy::Plugin <| ensure == 'present' or ensure == 'installed' |>
+  -> Elasticsearch_legacy::Role <| |>
 
   # Remove plugins after managing users/roles
-  Elasticsearch::User <| |>
-  -> Elasticsearch::Plugin <| ensure == 'absent' |>
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::Plugin <| ensure == 'absent' |>
+  Elasticsearch_legacy::User <| |>
+  -> Elasticsearch_legacy::Plugin <| ensure == 'absent' |>
+  Elasticsearch_legacy::Role <| |>
+  -> Elasticsearch_legacy::Plugin <| ensure == 'absent' |>
 
   # Ensure roles are defined before managing users that reference roles
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::User <| ensure == 'present' |>
+  Elasticsearch_legacy::Role <| |>
+  -> Elasticsearch_legacy::User <| ensure == 'present' |>
   # Ensure users are removed before referenced roles are managed
-  Elasticsearch::User <| ensure == 'absent' |>
-  -> Elasticsearch::Role <| |>
+  Elasticsearch_legacy::User <| ensure == 'absent' |>
+  -> Elasticsearch_legacy::Role <| |>
 
   # Ensure users and roles are managed before calling out to REST resources
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::Template <| |>
-  Elasticsearch::User <| |>
-  -> Elasticsearch::Template <| |>
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::Pipeline <| |>
-  Elasticsearch::User <| |>
-  -> Elasticsearch::Pipeline <| |>
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::Index <| |>
-  Elasticsearch::User <| |>
-  -> Elasticsearch::Index <| |>
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::Snapshot_repository <| |>
-  Elasticsearch::User <| |>
-  -> Elasticsearch::Snapshot_repository <| |>
+  Elasticsearch_legacy::Role <| |>
+  -> Elasticsearch_legacy::Template <| |>
+  Elasticsearch_legacy::User <| |>
+  -> Elasticsearch_legacy::Template <| |>
+  Elasticsearch_legacy::Role <| |>
+  -> Elasticsearch_legacy::Pipeline <| |>
+  Elasticsearch_legacy::User <| |>
+  -> Elasticsearch_legacy::Pipeline <| |>
+  Elasticsearch_legacy::Role <| |>
+  -> Elasticsearch_legacy::Index <| |>
+  Elasticsearch_legacy::User <| |>
+  -> Elasticsearch_legacy::Index <| |>
+  Elasticsearch_legacy::Role <| |>
+  -> Elasticsearch_legacy::Snapshot_repository <| |>
+  Elasticsearch_legacy::User <| |>
+  -> Elasticsearch_legacy::Snapshot_repository <| |>
 
   # Manage users/roles before instances (req'd to keep dir in sync)
-  Elasticsearch::Role <| |>
-  -> Elasticsearch::Instance <| |>
-  Elasticsearch::User <| |>
-  -> Elasticsearch::Instance <| |>
+  Elasticsearch_legacy::Role <| |>
+  -> Elasticsearch_legacy::Instance <| |>
+  Elasticsearch_legacy::User <| |>
+  -> Elasticsearch_legacy::Instance <| |>
 
   # Ensure instances are started before managing REST resources
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Template <| |>
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Pipeline <| |>
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Index <| |>
-  Elasticsearch::Instance <| ensure == 'present' |>
-  -> Elasticsearch::Snapshot_repository <| |>
+  Elasticsearch_legacy::Instance <| ensure == 'present' |>
+  -> Elasticsearch_legacy::Template <| |>
+  Elasticsearch_legacy::Instance <| ensure == 'present' |>
+  -> Elasticsearch_legacy::Pipeline <| |>
+  Elasticsearch_legacy::Instance <| ensure == 'present' |>
+  -> Elasticsearch_legacy::Index <| |>
+  Elasticsearch_legacy::Instance <| ensure == 'present' |>
+  -> Elasticsearch_legacy::Snapshot_repository <| |>
   # Ensure instances are stopped after managing REST resources
-  Elasticsearch::Template <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
-  Elasticsearch::Pipeline <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
-  Elasticsearch::Index <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
-  Elasticsearch::Snapshot_repository <| |>
-  -> Elasticsearch::Instance <| ensure == 'absent' |>
+  Elasticsearch_legacy::Template <| |>
+  -> Elasticsearch_legacy::Instance <| ensure == 'absent' |>
+  Elasticsearch_legacy::Pipeline <| |>
+  -> Elasticsearch_legacy::Instance <| ensure == 'absent' |>
+  Elasticsearch_legacy::Index <| |>
+  -> Elasticsearch_legacy::Instance <| ensure == 'absent' |>
+  Elasticsearch_legacy::Snapshot_repository <| |>
+  -> Elasticsearch_legacy::Instance <| ensure == 'absent' |>
 }
