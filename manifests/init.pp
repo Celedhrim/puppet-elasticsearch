@@ -369,7 +369,7 @@ class elasticsearch (
   Optional[Enum['shield', 'x-pack']]              $security_plugin,
   Enum['init', 'openbsd', 'openrc', 'systemd']    $service_provider,
   Hash                                            $snapshot_repositories,
-  Elasticsearch::Status                           $status,
+  Elasticsearch_legacy::Status                    $status,
   Optional[String]                                $system_key,
   Stdlib::Absolutepath                            $systemd_service_path,
   Hash                                            $templates,

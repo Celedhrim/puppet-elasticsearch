@@ -41,7 +41,7 @@ define elasticsearch::service::openbsd (
   Optional[String]          $init_template = $elasticsearch::init_template,
   Optional[String]          $pid_dir       = $elasticsearch::pid_dir,
   Optional[String]          $service_flags = undef,
-  Elasticsearch::Status     $status        = $elasticsearch::status,
+  Elasticsearch_legacy::Status     $status        = $elasticsearch::status,
 ) {
 
   #### Service management

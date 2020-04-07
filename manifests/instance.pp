@@ -155,7 +155,7 @@ define elasticsearch::instance (
   Optional[Enum['shield', 'x-pack']] $security_plugin               = $elasticsearch::security_plugin,
   Optional[String]                   $service_flags                 = undef,
   Boolean                            $ssl                           = false,
-  Elasticsearch::Status              $status                        = $elasticsearch::status,
+  Elasticsearch_legacy::Status       $status                        = $elasticsearch::status,
   Optional[String]                   $system_key                    = $elasticsearch::system_key,
 ) {
 

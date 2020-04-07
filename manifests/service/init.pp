@@ -41,7 +41,7 @@ define elasticsearch::service::init (
   Hash                      $init_defaults      = {},
   Optional[String]          $init_defaults_file = undef,
   Optional[String]          $init_template      = undef,
-  Elasticsearch::Status     $status             = $elasticsearch::status,
+  Elasticsearch_legacy::Status     $status             = $elasticsearch::status,
 ) {
 
   #### Service management

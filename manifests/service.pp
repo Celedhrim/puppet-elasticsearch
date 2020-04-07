@@ -46,7 +46,7 @@ define elasticsearch::service (
   Optional[String]          $init_defaults_file = undef,
   Optional[String]          $init_template      = undef,
   Optional[String]          $service_flags      = undef,
-  Elasticsearch::Status     $status             = $elasticsearch::status,
+  Elasticsearch_legacy::Status     $status             = $elasticsearch::status,
 ) {
 
   case $elasticsearch::service_provider {
