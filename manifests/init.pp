@@ -318,7 +318,7 @@ class elasticsearch (
   Hash                                            $config,
   Stdlib::Absolutepath                            $configdir,
   String                                          $daily_rolling_date_pattern,
-  Elasticsearch::Multipath                        $datadir,
+  Elasticsearch_legacy::Multipath                 $datadir,
   Boolean                                         $datadir_instance_directories,
   String                                          $default_logging_level,
   Optional[Stdlib::Absolutepath]                  $defaults_location,

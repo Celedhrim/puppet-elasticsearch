@@ -131,7 +131,7 @@ define elasticsearch::instance (
   Optional[Hash]                     $config                        = undef,
   Stdlib::Absolutepath               $configdir                     = "${elasticsearch::configdir}/${name}",
   String                             $daily_rolling_date_pattern    = $elasticsearch::daily_rolling_date_pattern,
-  Optional[Elasticsearch::Multipath] $datadir                       = undef,
+  Optional[Elasticsearch_legacy::Multipath] $datadir                = undef,
   Boolean                            $datadir_instance_directories  = $elasticsearch::datadir_instance_directories,
   Boolean                            $deprecation_logging           = false,
   String                             $deprecation_logging_level     = 'DEBUG',
